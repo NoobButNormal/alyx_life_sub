@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elyx Journey Visualization - Mohit's Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        .large-chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        .marker-card {
+            background-color: #1F2937; /* bg-gray-800 */
+            border: 1px solid #374151; /* border-gray-700 */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .marker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+        }
+        .timeline-item {
+            transition: all 0.2s ease-in-out;
+        }
+        .timeline-item.active {
+            background-color: #3B82F6; /* bg-blue-600 */
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white">Mohit's Health Journey</h1>
+            <p class="text-lg text-gray-400 mt-2">An interactive look at 8 months of data-driven health optimization.</p>
+        </header>
+
+        <!-- Top-Level KPIs -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div id="kpi-weight" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+            <div id="kpi-apob" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+            <div id="kpi-hba1c" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+        </section>
+
+        <!-- Interactive Timeline & Reasoning -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">Key Changes & Effects</h2>
+            <div id="timeline-container" class="flex justify-center flex-wrap gap-3 mb-6"></div>
+            <div id="reasoning-card" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg min-h-[150px] transition-opacity duration-300 opacity-0">
+                <h3 id="reasoning-title" class="text-xl font-bold text-white mb-2"></h3>
+                <div class="text-gray-300 space-y-2">
+                    <p><strong class="text-blue-400">The "Why":</strong> <span id="reasoning-why"></span></p>
+                    <p><strong class="text-green-400">The Outcome:</strong> <span id="reasoning-outcome"></span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Body Composition Journey -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">Body Composition Journey</h2>
+            <div class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg">
+                <div class="large-chart-container">
+                    <canvas id="weight-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Markers Dashboard -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">Key Blood Marker Progression</h2>
+            <div id="marker-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- Internal Metrics Tracker -->
+        <section>
+            <h2 class="text-3xl font-bold text-white mb-6 text-center">Internal Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div id="metric-consults" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+                <div id="metric-engagement" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+                <div id="metric-adherence" class="bg-gray-800 border border-gray-700 p-6 rounded-lg shadow-lg text-center"></div>
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        // --- 1. RAW DATA SOURCE ---
+        // This is the pre-extracted health data that the application will process.
+        const extractedHealthData = [
+            { "marker": "ApoB", "value": 135.0, "timestamp": "2025-10-01T10:01:00Z", "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 µIU/mL" },
+            { "marker": "hs-CRP", "value": 3.2, "timestamp": "2025-10-01T10:01:00Z", "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 µIU/mL" },
+            { "marker": "HbA1c", "value": 5.9, "timestamp": "2025-10-01T10:01:00Z", "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 µIU/mL" },
+            { "marker": "Fasting Insulin", "value": 18.0, "timestamp": "2025-10-01T10:01:00Z", "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 µIU/mL" },
+            { "marker": "Triglycerides", "value": 250.0, "timestamp": "2025-10-01T10:02:00Z", "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL" },
+            { "marker": "HDL Cholesterol", "value": 35.0, "timestamp": "2025-10-01T10:02:00Z", "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL" },
+            { "marker": "ALT", "value": 55.0, "timestamp": "2025-10-01T10:02:00Z", "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL" },
+            { "marker": "Total Testosterone", "value": 310.0, "timestamp": "2025-10-01T10:02:00Z", "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL" },
+            { "marker": "Weight", "value": 4.0, "timestamp": "2025-10-15T08:00:00Z", "comment": "Morning team. Two-week check-in: down 4kgs already! The plan is working. Feeling motivated. 🔥" },
+            { "marker": "ApoB", "value": 105.0, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "hs-CRP", "value": 1.5, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "HbA1c", "value": 5.7, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "Fasting Insulin", "value": 9.0, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "Triglycerides", "value": 150.0, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "HDL Cholesterol", "value": 45.0, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "ALT", "value": 45.0, "timestamp": "2025-12-15T14:01:00Z", "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 µIU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L" },
+            { "marker": "ApoB", "value": 82.0, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "hs-CRP", "value": 0.8, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "HbA1c", "value": 5.4, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "Fasting Insulin", "value": 4.0, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "Triglycerides", "value": 95.0, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "HDL Cholesterol", "value": 55.0, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" },
+            { "marker": "ALT", "value": 25.0, "timestamp": "2026-03-16T15:01:00Z", "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 µIU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL" }
+        ];
+
+        // --- 2. THE DATA TRANSFORMATION MODEL ---
+        // This section processes the pre-extracted data into a format suitable for visualization.
+
+        function processExtractedData(data) {
+            const healthData = {
+                labels: ["Month 2 (Baseline)", "Month 4", "Month 7"],
+                markers: [
+                    { name: "ApoB", unit: "mg/dL", values: [], optimal: "< 80", borderColor: '#60A5FA', backgroundColor: 'rgba(96, 165, 250, 0.1)' },
+                    { name: "hs-CRP", unit: "mg/L", values: [], optimal: "< 1.0", borderColor: '#F87171', backgroundColor: 'rgba(248, 113, 113, 0.1)' },
+                    { name: "HbA1c", unit: "%", values: [], optimal: "< 5.7", borderColor: '#C084FC', backgroundColor: 'rgba(192, 132, 252, 0.1)' },
+                    { name: "Fasting Insulin", unit: "µIU/mL", values: [], optimal: "< 5", borderColor: '#FBBF24', backgroundColor: 'rgba(251, 191, 36, 0.1)' },
+                    { name: "Triglycerides", unit: "mg/dL", values: [], optimal: "< 100", borderColor: '#FB923C', backgroundColor: 'rgba(251, 146, 60, 0.1)' },
+                    { name: "HDL Cholesterol", unit: "mg/dL", values: [], optimal: "> 60", borderColor: '#4ADE80', backgroundColor: 'rgba(74, 222, 128, 0.1)' },
+                    { name: "ALT", unit: "U/L", values: [], optimal: "< 40", borderColor: '#2DD4BF', backgroundColor: 'rgba(45, 212, 191, 0.1)' },
+                    { name: "Total Testosterone", unit: "ng/dL", values: [], optimal: "> 450", borderColor: '#A78BFA', backgroundColor: 'rgba(167, 139, 250, 0.1)' }
+                ]
+            };
+
+            healthData.markers.forEach(marker => {
+                const markerDataPoints = data
+                    .filter(d => d.marker === marker.name)
+                    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                marker.values = markerDataPoints.map(dp => dp.value);
+            });
+            
+            // Simulate weight data as it's not fully present in the extracted log
+            const weightData = {
+                labels: ["Start", "M2", "M3", "M4", "M5", "M6", "M7", "M8"],
+                values: [130, 123, 121.5, 118, 115, 110, 106, 102]
+            };
+
+            // Internal metrics are static as they can't be derived from this data
+            const internalMetrics = {
+                consults: 15, // Static value
+                engagement: 20, // Static value
+                adherence: "50%"
+            };
+            
+            return { healthData, weightData, internalMetrics };
+        }
+
+        // --- 3. UI RENDERING & INTERACTIVITY ---
+        
+        const timelineEvents = [
+            { id: 0, title: "Initial Diagnosis", dataIndex: 0, why: "Mohit's baseline tests revealed high cardiovascular risk (ApoB: 135) and pre-diabetic blood sugar (HbA1c: 5.9%).", outcome: "The team created 'Plan V1', focusing on a 50kg weight loss goal as the primary strategy to reverse these markers through nutrition and exercise." },
+            { id: 1, title: "Weight Loss Plateau", dataIndex: null, why: "After initial success, progress stalled. Analysis of CMF watch data and food logs pointed to poor sleep during business travel and hidden calories.", outcome: "The plan was adapted. Rachel introduced HIIT workouts and Carla adjusted nutrition to break the plateau, which was successful within a week." },
+            { id: 2, title: "Plan V2 & First Wins", dataIndex: 1, why: "The 3-month follow-up tests showed significant improvement (ApoB dropped to 105, HbA1c moved out of pre-diabetic range).", outcome: "This data validated the effectiveness of the initial plan and the plateau adjustment. 'Plan V2' was created to build on this momentum with carb cycling." },
+            { id: 3, title: "Back Injury Setback", dataIndex: null, why: "Mohit tweaked his back during travel, making his current workout plan impossible and unsafe.", outcome: "The priority immediately shifted from fat loss to recovery. Rachel replaced the entire plan with a rehab and mobility protocol to ensure long-term structural health." },
+            { id: 4, title: "CGM Introduction", dataIndex: null, why: "With Mohit recovered, the team wanted to accelerate fat loss by getting more precise nutritional data.", outcome: "The Continuous Glucose Monitor provided real-time feedback, allowing Mohit and Carla to identify and eliminate foods causing blood sugar spikes, dramatically improving his metabolic health." },
+            { id: 5, title: "Optimal Health Achieved", dataIndex: 2, why: "The 6-month diagnostic tests showed phenomenal results. Almost all key markers, including ApoB (82) and hs-CRP (0.8), were now in the optimal range.", outcome: "With his primary health risks managed, the focus of the plan could expand to his secondary goal: enhancing cognitive performance and building long-term, sustainable habits." }
+        ];
+
+        let charts = {};
+        let activeEventId = 0;
+
+        const kpiWeight = document.getElementById('kpi-weight');
+        const kpiApob = document.getElementById('kpi-apob');
+        const kpiHba1c = document.getElementById('kpi-hba1c');
+        const markerGrid = document.getElementById('marker-grid');
+        const timelineContainer = document.getElementById('timeline-container');
+        const reasoningCard = document.getElementById('reasoning-card');
+        const reasoningTitle = document.getElementById('reasoning-title');
+        const reasoningWhy = document.getElementById('reasoning-why');
+        const reasoningOutcome = document.getElementById('reasoning-outcome');
+        const weightChartCanvas = document.getElementById('weight-chart');
+        const metricConsults = document.getElementById('metric-consults');
+        const metricEngagement = document.getElementById('metric-engagement');
+        const metricAdherence = document.getElementById('metric-adherence');
+
+        function showEventDetails(eventId) {
+            const event = timelineEvents.find(e => e.id === eventId);
+            if (!event) return;
+            activeEventId = eventId;
+            reasoningTitle.textContent = event.title;
+            reasoningWhy.textContent = event.why;
+            reasoningOutcome.textContent = event.outcome;
+            reasoningCard.classList.remove('opacity-0');
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.classList.toggle('active', parseInt(item.dataset.id) === eventId);
+            });
+            Object.values(charts).forEach(chart => {
+                const dataset = chart.data.datasets[0];
+                dataset.pointRadius = dataset.data.map((_, i) => i === event.dataIndex ? 8 : 4);
+                dataset.pointBackgroundColor = dataset.data.map((_, i) => i === event.dataIndex ? '#FFFFFF' : dataset.borderColor);
+                dataset.borderWidth = dataset.data.map((_, i) => i === event.dataIndex ? 4 : 2);
+                chart.update();
+            });
+        }
+
+        function createTimeline() {
+            timelineEvents.forEach(event => {
+                const item = document.createElement('button');
+                item.className = 'timeline-item bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md';
+                item.textContent = event.title;
+                item.dataset.id = event.id;
+                item.onclick = () => showEventDetails(event.id);
+                timelineContainer.appendChild(item);
+            });
+        }
+        
+        function createWeightChart(weightData) {
+            new Chart(weightChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: weightData.labels,
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: weightData.values,
+                        borderColor: '#4ADE80',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#4ADE80',
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true, labels: { color: '#D1D5DB' } } },
+                    scales: {
+                        y: { beginAtZero: false, grid: { color: '#374151' }, ticks: { color: '#9CA3AF', font: { size: 14 } }, title: { display: true, text: 'Weight (kg)', color: '#D1D5DB', font: { size: 16 } } },
+                        x: { grid: { display: false }, ticks: { color: '#9CA3AF', font: { size: 14 } } }
+                    }
+                }
+            });
+        }
+
+        function createMarkerCard(marker, healthData) {
+            const card = document.createElement('div');
+            card.className = 'marker-card p-4 rounded-lg';
+            const header = document.createElement('div');
+            header.className = 'flex justify-between items-center mb-2';
+            const title = document.createElement('h4');
+            title.className = 'text-lg font-bold text-gray-200';
+            title.textContent = marker.name;
+            const latestValue = document.createElement('p');
+            latestValue.className = 'text-2xl font-bold';
+            latestValue.style.color = marker.borderColor;
+            latestValue.innerHTML = `${marker.values[marker.values.length - 1]} <span class="text-base font-medium text-gray-400">${marker.unit}</span>`;
+            header.appendChild(title);
+            header.appendChild(latestValue);
+            const description = document.createElement('p');
+            description.className = 'text-sm text-gray-400 mb-4';
+            description.textContent = `Optimal: ${marker.optimal}`;
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'chart-container';
+            const canvas = document.createElement('canvas');
+            chartWrapper.appendChild(canvas);
+            card.appendChild(header);
+            card.appendChild(description);
+            card.appendChild(chartWrapper);
+            markerGrid.appendChild(card);
+            const chart = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: healthData.labels,
+                    datasets: [{
+                        label: marker.name,
+                        data: marker.values,
+                        borderColor: marker.borderColor,
+                        backgroundColor: marker.backgroundColor,
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointBackgroundColor: marker.borderColor,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBorderColor: '#FFFFFF',
+                        pointBorderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, grid: { color: '#374151' }, ticks: { color: '#9CA3AF' } },
+                        x: { grid: { display: false }, ticks: { color: '#9CA3AF' } }
+                    }
+                }
+            });
+            charts[marker.name] = chart;
+        }
+
+        function populateKPIs(weightData, healthData) {
+            const totalLoss = weightData.values[0] - weightData.values[weightData.values.length - 1];
+            kpiWeight.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">Total Weight Loss</h3><p class="text-5xl font-bold text-green-400 mt-2">${totalLoss} kg</p><p class="text-sm text-gray-500 mt-1">From ${weightData.values[0]}kg to ${weightData.values[weightData.values.length - 1]}kg</p>`;
+
+            const apob = healthData.markers.find(m => m.name === 'ApoB');
+            kpiApob.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">ApoB (Cardiovascular Risk)</h3><p class="text-5xl font-bold text-blue-400 mt-2">${apob.values[apob.values.length - 1]} <span class="text-2xl text-gray-400">mg/dL</span></p><p class="text-sm text-gray-500 mt-1">Down from ${apob.values[0]} (Optimal < 80)</p>`;
+
+            const hba1c = healthData.markers.find(m => m.name === 'HbA1c');
+            kpiHba1c.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">HbA1c (Blood Sugar)</h3><p class="text-5xl font-bold text-purple-400 mt-2">${hba1c.values[hba1c.values.length - 1]}%</p><p class="text-sm text-gray-500 mt-1">From Pre-Diabetic to Healthy</p>`;
+        }
+
+        function populateInternalMetrics(metrics) {
+            metricConsults.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">Total Consults</h3><p class="text-5xl font-bold text-yellow-400 mt-2">${metrics.consults}</p>`;
+            metricEngagement.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">Member Engagement</h3><p class="text-5xl font-bold text-teal-400 mt-2">${metrics.engagement}</p><p class="text-sm text-gray-500 mt-1">messages sent</p>`;
+            metricAdherence.innerHTML = `<h3 class="text-lg font-semibold text-gray-400">Plan Adherence</h3><p class="text-5xl font-bold text-pink-400 mt-2">~${metrics.adherence}</p><p class="text-sm text-gray-500 mt-1">Requires adaptation</p>`;
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            // 1. Run the data transformation model on the pre-extracted data
+            const { healthData, weightData, internalMetrics } = processExtractedData(extractedHealthData);
+
+            // 2. Populate the UI with the structured data
+            populateKPIs(weightData, healthData);
+            createWeightChart(weightData);
+            healthData.markers.forEach(marker => createMarkerCard(marker, healthData));
+            createTimeline();
+            populateInternalMetrics(internalMetrics);
+            
+            // 3. Set the initial interactive state
+            showEventDetails(0);
+        };
+    </script>
+</body>
+</html>

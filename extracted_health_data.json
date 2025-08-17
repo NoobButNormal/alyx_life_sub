@@ -1,0 +1,140 @@
+[
+    {
+        "marker": "ApoB",
+        "value": 135.0,
+        "timestamp": "2025-10-01T10:01:00Z",
+        "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 \u00b5IU/mL"
+    },
+    {
+        "marker": "hs-CRP",
+        "value": 3.2,
+        "timestamp": "2025-10-01T10:01:00Z",
+        "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 \u00b5IU/mL"
+    },
+    {
+        "marker": "HbA1c",
+        "value": 5.9,
+        "timestamp": "2025-10-01T10:01:00Z",
+        "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 \u00b5IU/mL"
+    },
+    {
+        "marker": "Fasting Insulin",
+        "value": 18.0,
+        "timestamp": "2025-10-01T10:01:00Z",
+        "comment": "1. ApoB: 135 mg/dL\n2. hs-CRP: 3.2 mg/L\n3. HbA1c: 5.9%\n4. Fasting Insulin: 18 \u00b5IU/mL"
+    },
+    {
+        "marker": "Triglycerides",
+        "value": 250.0,
+        "timestamp": "2025-10-01T10:02:00Z",
+        "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL"
+    },
+    {
+        "marker": "HDL Cholesterol",
+        "value": 35.0,
+        "timestamp": "2025-10-01T10:02:00Z",
+        "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL"
+    },
+    {
+        "marker": "ALT",
+        "value": 55.0,
+        "timestamp": "2025-10-01T10:02:00Z",
+        "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL"
+    },
+    {
+        "marker": "Total Testosterone",
+        "value": 310.0,
+        "timestamp": "2025-10-01T10:02:00Z",
+        "comment": "5. Triglycerides: 250 mg/dL\n6. HDL Cholesterol: 35 mg/dL\n7. ALT: 55 U/L\n8. Total Testosterone: 310 ng/dL"
+    },
+    {
+        "marker": "Weight",
+        "value": 4.0,
+        "timestamp": "2025-10-15T08:00:00Z",
+        "comment": "Morning team. Two-week check-in: down 4kgs already! The plan is working. Feeling motivated. \ud83d\udd25"
+    },
+    {
+        "marker": "ApoB",
+        "value": 105.0,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "hs-CRP",
+        "value": 1.5,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "HbA1c",
+        "value": 5.7,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "Fasting Insulin",
+        "value": 9.0,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "Triglycerides",
+        "value": 150.0,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "HDL Cholesterol",
+        "value": 45.0,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "ALT",
+        "value": 45.0,
+        "timestamp": "2025-12-15T14:01:00Z",
+        "comment": "ApoB: 105 mg/dL\nhs-CRP: 1.5 mg/L\nHbA1c: 5.7%\nFasting Insulin: 9 \u00b5IU/mL\nTriglycerides: 150 mg/dL\nTestosterone: 350 ng/dL\nHDL Cholesterol: 45 mg/dL\nALT: 45 U/L"
+    },
+    {
+        "marker": "ApoB",
+        "value": 82.0,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "hs-CRP",
+        "value": 0.8,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "HbA1c",
+        "value": 5.4,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "Fasting Insulin",
+        "value": 4.0,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "Triglycerides",
+        "value": 95.0,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "HDL Cholesterol",
+        "value": 55.0,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    },
+    {
+        "marker": "ALT",
+        "value": 25.0,
+        "timestamp": "2026-03-16T15:01:00Z",
+        "comment": "ApoB: 82 mg/dL\nhs-CRP: 0.8 mg/L\nHbA1c: 5.4%\nFasting Insulin: 4 \u00b5IU/mL\nTriglycerides: 95 mg/dL\nALT: 25 U/L\nTestosterone: 480 ng/dL\nHDL Cholesterol: 55 mg/dL"
+    }
+]
